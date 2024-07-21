@@ -29,6 +29,9 @@ namespace Persistence
             services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
             services.AddScoped<IOperationClaimRepository, OperationClaimRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddScoped<ICalendarItemRepository, CalendarItemRepository>();
+
 
             return services;
 

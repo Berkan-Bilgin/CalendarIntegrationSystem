@@ -19,9 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Calendar\Tasks\Commands\" />
-    <Folder Include="Features\Calendar\Tasks\Profiles\" />
-    <Folder Include="Features\Calendar\Tasks\Queries\" />
+    <Folder Include="Features\Calendar\CalendarItems\Commands\" />
   </ItemGroup>
 
 </Project>
