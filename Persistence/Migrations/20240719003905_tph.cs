@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class tph : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,10 +34,10 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -49,49 +49,27 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
+                name: "CalendarItems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Task_Status = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.PrimaryKey("PK_CalendarItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tasks",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tasks_Users_UserId",
+                        name: "FK_CalendarItems_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -132,32 +110,28 @@ namespace Persistence.Migrations
                 columns: new[] { "Id", "CreatedDate", "DeletedDate", "Email", "FirstName", "LastName", "PasswordHash", "PasswordSalt", "UpdatedDate", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("370ebb87-c905-4c1b-85b9-119776587994"), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2388), null, "john@example.com", null, null, new byte[] { 156, 166, 25, 222, 248, 106, 190, 236, 237, 245, 248, 197, 240, 154, 160, 50, 74, 64, 170, 127, 179, 237, 172, 217, 226, 66, 6, 61, 110, 232, 183, 238, 230, 226, 72, 42, 160, 114, 181, 66, 107, 83, 96, 151, 209, 231, 61, 90, 166, 201, 121, 4, 61, 115, 31, 124, 30, 15, 2, 21, 131, 14, 53, 171 }, new byte[] { 75, 9, 32, 39, 239, 45, 229, 63, 3, 183, 58, 43, 175, 188, 50, 85, 254, 7, 215, 211, 11, 113, 177, 45, 141, 235, 249, 208, 228, 8, 166, 72, 141, 35, 181, 56, 65, 89, 189, 222, 227, 162, 109, 230, 97, 78, 248, 242, 134, 69, 165, 62, 190, 153, 225, 44, 223, 228, 116, 216, 223, 101, 160, 195, 55, 213, 137, 216, 178, 90, 158, 172, 101, 19, 105, 55, 20, 195, 154, 140, 65, 86, 121, 248, 195, 156, 98, 82, 5, 105, 16, 177, 18, 180, 245, 125, 55, 235, 243, 133, 172, 208, 4, 99, 88, 185, 17, 68, 142, 8, 152, 148, 9, 55, 249, 160, 215, 21, 36, 208, 88, 250, 230, 112, 61, 11, 138, 65 }, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john_doe" },
-                    { new Guid("ef2c7840-dbef-4a92-974f-63059500c535"), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2390), null, "jane@example.com", null, null, new byte[] { 255, 162, 198, 138, 194, 153, 129, 57, 229, 153, 208, 9, 46, 79, 63, 61, 32, 238, 201, 69, 42, 26, 219, 240, 71, 215, 221, 42, 148, 248, 68, 83, 252, 165, 62, 99, 195, 167, 244, 51, 131, 78, 90, 82, 199, 3, 89, 97, 246, 210, 145, 216, 82, 239, 8, 123, 166, 115, 173, 210, 90, 39, 176, 63 }, new byte[] { 146, 53, 83, 205, 249, 237, 74, 154, 37, 5, 225, 150, 141, 33, 161, 101, 187, 152, 255, 214, 45, 241, 119, 43, 168, 151, 106, 12, 68, 52, 197, 24, 240, 230, 128, 252, 8, 4, 164, 100, 233, 73, 35, 122, 16, 112, 15, 240, 71, 137, 165, 209, 13, 167, 57, 3, 101, 54, 239, 149, 85, 244, 145, 225, 17, 241, 113, 223, 242, 68, 108, 156, 224, 62, 162, 58, 30, 28, 212, 98, 115, 8, 54, 6, 167, 44, 201, 213, 107, 148, 123, 38, 26, 212, 244, 187, 240, 94, 253, 224, 193, 180, 213, 13, 218, 142, 165, 156, 142, 26, 41, 233, 185, 7, 113, 207, 6, 36, 201, 28, 153, 122, 6, 112, 66, 89, 234, 66 }, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane_doe" }
+                    { new Guid("97bfa56d-ce88-4755-a4b6-1560862d8fb1"), new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6080), null, "jane@example.com", null, null, new byte[] { 39, 242, 192, 65, 154, 126, 204, 38, 95, 30, 208, 86, 131, 129, 17, 100, 110, 44, 245, 109, 24, 38, 38, 96, 93, 249, 217, 48, 132, 205, 249, 147, 94, 153, 192, 161, 243, 82, 23, 134, 82, 77, 22, 3, 65, 60, 3, 176, 222, 107, 0, 206, 253, 165, 38, 255, 236, 224, 164, 44, 46, 39, 62, 36 }, new byte[] { 220, 142, 206, 141, 182, 204, 75, 49, 64, 183, 110, 137, 202, 240, 140, 196, 223, 40, 155, 146, 82, 243, 227, 54, 219, 110, 49, 19, 200, 63, 152, 216, 13, 100, 253, 28, 74, 247, 207, 243, 254, 11, 130, 125, 148, 12, 26, 66, 253, 228, 82, 93, 131, 235, 224, 4, 10, 202, 17, 129, 155, 38, 118, 1, 61, 252, 90, 58, 179, 102, 127, 87, 192, 242, 35, 200, 179, 161, 51, 21, 40, 5, 185, 229, 58, 213, 125, 160, 201, 84, 207, 237, 56, 200, 230, 55, 56, 114, 184, 249, 135, 55, 150, 103, 103, 1, 183, 215, 96, 125, 154, 180, 174, 119, 171, 233, 75, 218, 35, 227, 156, 88, 32, 187, 65, 106, 167, 185 }, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane_doe" },
+                    { new Guid("dba1f313-b04a-46ef-9b3a-8b3ae17889de"), new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6077), null, "john@example.com", null, null, new byte[] { 227, 155, 155, 120, 43, 203, 23, 223, 110, 214, 11, 202, 206, 31, 186, 6, 88, 226, 219, 171, 20, 134, 146, 145, 142, 39, 249, 16, 246, 67, 1, 114, 159, 42, 23, 237, 77, 82, 37, 138, 18, 53, 156, 39, 84, 146, 88, 80, 63, 131, 147, 89, 140, 42, 168, 126, 21, 56, 251, 228, 154, 204, 5, 178 }, new byte[] { 183, 178, 59, 35, 25, 215, 207, 165, 142, 71, 187, 26, 195, 183, 212, 19, 4, 221, 248, 13, 82, 25, 59, 8, 118, 62, 104, 4, 115, 16, 215, 237, 69, 62, 2, 233, 209, 246, 117, 141, 1, 91, 69, 65, 166, 163, 173, 157, 86, 81, 63, 40, 192, 208, 98, 127, 179, 159, 232, 67, 133, 143, 93, 151, 89, 102, 12, 47, 255, 24, 38, 245, 164, 60, 11, 205, 190, 176, 145, 230, 248, 74, 147, 224, 192, 215, 87, 221, 23, 163, 147, 134, 226, 145, 210, 192, 152, 218, 129, 73, 245, 215, 169, 187, 188, 88, 209, 142, 128, 15, 126, 97, 199, 45, 113, 74, 97, 5, 151, 131, 255, 37, 85, 19, 99, 185, 241, 248 }, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "john_doe" }
                 });
 
             migrationBuilder.InsertData(
-                table: "Events",
-                columns: new[] { "Id", "CreatedDate", "DeletedDate", "EndDate", "StartDate", "Status", "Title", "UpdatedDate", "UserId" },
-                values: new object[,]
-                {
-                    { new Guid("5dad0354-16ef-4c78-8576-d995c514195c"), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2529), null, new DateTime(2024, 7, 11, 3, 29, 12, 786, DateTimeKind.Utc).AddTicks(2528), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2528), 0, "Event 2", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ef2c7840-dbef-4a92-974f-63059500c535") },
-                    { new Guid("e14ab769-9bbd-415e-be0a-3e57f162ebff"), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2525), null, new DateTime(2024, 7, 11, 2, 29, 12, 786, DateTimeKind.Utc).AddTicks(2520), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2520), 0, "Event 1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("370ebb87-c905-4c1b-85b9-119776587994") }
-                });
+                table: "CalendarItems",
+                columns: new[] { "Id", "CreatedDate", "DeletedDate", "EndDate", "ItemType", "Location", "StartDate", "Status", "Title", "UpdatedDate", "UserId" },
+                values: new object[] { new Guid("3bc2b265-56fe-4003-ba03-f7721055c21c"), new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6234), null, new DateTime(2024, 7, 19, 3, 39, 4, 671, DateTimeKind.Utc).AddTicks(6233), "Event", "Volkswagen Arena", new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6233), 0, "Event 2", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("97bfa56d-ce88-4755-a4b6-1560862d8fb1") });
 
             migrationBuilder.InsertData(
-                table: "Tasks",
-                columns: new[] { "Id", "CreatedDate", "DeletedDate", "EndDate", "StartDate", "Status", "Title", "UpdatedDate", "UserId" },
-                values: new object[] { new Guid("d81c8cf3-04c0-46c8-a098-77190b64eda8"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 7, 11, 8, 29, 12, 786, DateTimeKind.Utc).AddTicks(2556), new DateTime(2024, 7, 11, 0, 29, 12, 786, DateTimeKind.Utc).AddTicks(2555), 0, "Task 1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("370ebb87-c905-4c1b-85b9-119776587994") });
+                table: "CalendarItems",
+                columns: new[] { "Id", "CreatedDate", "DeletedDate", "EndDate", "ItemType", "StartDate", "Task_Status", "Title", "UpdatedDate", "UserId" },
+                values: new object[] { new Guid("45c1906a-2f9b-4387-9ca4-edecca7e842e"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2024, 7, 19, 8, 39, 4, 671, DateTimeKind.Utc).AddTicks(6260), "Task", new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6259), 0, "Task 1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("dba1f313-b04a-46ef-9b3a-8b3ae17889de") });
+
+            migrationBuilder.InsertData(
+                table: "CalendarItems",
+                columns: new[] { "Id", "CreatedDate", "DeletedDate", "EndDate", "ItemType", "Location", "StartDate", "Status", "Title", "UpdatedDate", "UserId" },
+                values: new object[] { new Guid("4d20ca45-136b-4fc3-a29f-cd76ee29d74a"), new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6231), null, new DateTime(2024, 7, 19, 2, 39, 4, 671, DateTimeKind.Utc).AddTicks(6226), "Event", "Besiktas Kultur Merkezi", new DateTime(2024, 7, 19, 0, 39, 4, 671, DateTimeKind.Utc).AddTicks(6225), 0, "Event 1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("dba1f313-b04a-46ef-9b3a-8b3ae17889de") });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_UserId",
-                table: "Events",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_UserId",
-                table: "Tasks",
+                name: "IX_CalendarItems_UserId",
+                table: "CalendarItems",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -175,10 +149,7 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Events");
-
-            migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "CalendarItems");
 
             migrationBuilder.DropTable(
                 name: "UserOperationClaims");

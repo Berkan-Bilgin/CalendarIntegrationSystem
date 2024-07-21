@@ -26,13 +26,19 @@ namespace Persistence.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost; Database=Calendar; Trusted_Connection=True; TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=localhost; Database=Calendar.TPH; Trusted_Connection=True; TrustServerCertificate=True;");
             base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CalendarItem>()
+                .ToTable("CalendarItems")
+                .HasDiscriminator<string>("ItemType")
+                .HasValue<TaskEntity>("Task")
+                .HasValue<Event>("Event");
 
             var firstUserId = Guid.NewGuid();
             var secondUserId = Guid.NewGuid();
@@ -66,8 +72,8 @@ namespace Persistence.Contexts
 
             // Seed data for Event
             modelBuilder.Entity<Event>().HasData(
-               new Event { Id = Guid.NewGuid(), Title = "Event 1", StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddHours(2), CreatedDate = DateTime.UtcNow, UserId = firstUserId },
-               new Event { Id = Guid.NewGuid(), Title = "Event 2", StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddHours(3), CreatedDate = DateTime.UtcNow, UserId = secondUserId }
+               new Event { Id = Guid.NewGuid(), Title = "Event 1", StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddHours(2), Location = "Besiktas Kultur Merkezi", CreatedDate = DateTime.UtcNow, UserId = firstUserId },
+               new Event { Id = Guid.NewGuid(), Title = "Event 2", StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddHours(3), Location = "Volkswagen Arena", CreatedDate = DateTime.UtcNow, UserId = secondUserId }
            );
 
             // Seed data for TaskEntity
