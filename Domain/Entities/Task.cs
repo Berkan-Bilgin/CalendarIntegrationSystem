@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Task : Entity
+    public class Task : CalendarItem
     {
 
-        public string Title { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
         public TaskStatus Status { get; set; }
-
-        public Guid UserId { get; set; }
-        public User User { get; set; }
     }
 
 
